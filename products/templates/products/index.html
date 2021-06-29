@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>GeekShop</title>
+    <title>{{ title }}</title>
 
     <!-- Bootstrap core CSS -->
     <link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -60,10 +60,15 @@
         <div class="row">
             <div class="col-lg-6">
                 <h1 class="mt-5">GeekShop Store</h1>
-                <p>
+                {% if promotion %}
+                    <p>{{ promotion_text }}</p>
+                {% else %}
+                    <p>{{ no_promo_text }}</p>
+                {% endif %}
+                <!--<p>
                     Новые образы и лучшие бренды на GeekShop Store.
                     Бесплатная доставка по всему миру! Аутлет: до -70% Собственный бренд. -20% новым покупателям.
-                </p>
+                </p> -->
                 <button id="start-purchase-btn" type="button" class="btn btn-lg">
                     <a id="start-purchase-link" href="products.html">
                         Начать покупки
