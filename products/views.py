@@ -1,3 +1,5 @@
+import datetime
+
 from django.shortcuts import render
 
 # Create your views here.
@@ -8,12 +10,14 @@ def index(request):
         'promotion': True,
         'promotion_text': 'Новые образы и лучшие бренды на GeekShop Store. Бесплатная доставка по всему миру! Аутлет: до -70% Собственный бренд. -20% новым покупателям.',
         'no_promo_text': 'Новые образы и лучшие бренды на GeekShop Store. Бесплатная доставка по всему миру!',
+
     }
     return render(request, 'products/index.html', context)
 
 def products(request):
     context = {
         'title': 'GeekShop - Каталог',
+        'cur_date': datetime.datetime.now(),
         'products': [
             {
                 'name': 'Худи черного цвета с монограммами adidas Originals',
