@@ -19,11 +19,9 @@ def index(request):
     return render(request, 'products/index.html', context)
 
 def products(request):
-    #file_path = os.path.join(MODULE_DIRS, 'fixtures/goods.json')
     context = {
         'title': 'GeekShop - Каталог',
         'cur_date': datetime.datetime.now(),
-        #'products': json.load(open(file_path, encoding='utf-8'))
         'products': Product.objects.all(),
         'categories': ProductCategory.objects.all(),
     }
