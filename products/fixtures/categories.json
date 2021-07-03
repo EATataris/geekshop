@@ -3,16 +3,16 @@
     "model": "products.productcategory",
     "pk": 1,
     "fields": {
-      "name": "Одежда",
-      "description": "Описание для одежды"
+      "name": "Новинки",
+      "description": "Описание для новинок"
     }
   },
   {
     "model": "products.productcategory",
     "pk": 2,
     "fields": {
-      "name": "Аксессуры",
-      "description": "Описание для аксессуара"
+      "name": "Одежда",
+      "description": "Описание для одежды"
     }
   },
   {
@@ -27,8 +27,8 @@
     "model": "products.productcategory",
     "pk": 4,
     "fields": {
-      "name": "Новинки",
-      "description": "Описание для новинок"
+      "name": "Аксессуары",
+      "description": "Описание для аксуссуаров"
     }
   },
   {
