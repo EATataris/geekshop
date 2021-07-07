@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponseRedirect
-from users.forms import UserLoginForm, UserRegistrationForm
+from users.forms import UserLoginForm, UserRegistrationForm, UserProfileFrom
 from django.contrib import auth, messages
 from django.urls import reverse
 # Create your views here.
@@ -45,5 +45,6 @@ def logout(request):
 
 
 def profile(request):
-    context = {'title': 'GeekShop - Личный кабинет'}
+    form = UserProfileFrom(instance=request.user)
+    context = {'title': 'GeekShop - Личный кабинет', 'form': form}
     return render(request, 'users/profile.html', context)
