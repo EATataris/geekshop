@@ -1,17 +1,33 @@
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponseRedirect
+
 from users.models import User
+from admins.forms import UserAdminRegistationForm
+from django.urls import reverse
 
 
 # Create your views here.
 def index(request):
-    return render(request, 'admins/index.html')
+    context = {'title': 'Админ-панель'}
+    return render(request, 'admins/index.html', context)
 
 def admin_users(request):
-    context = {'users': User.objects.all(),}
+    context = {'title': 'Админ-панель - пользователи', 'users': User.objects.all()}
     return render(request, 'admins/admin-users-read.html', context)
 
 def admin_users_create(request):
-    return render(request, 'admins/admin-users-create.html')
+    if request.method == 'POST':
+        form = UserAdminRegistationForm(data=request.POST, files=request.FILES)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('admins:admin_users'))
+    else:
+        form = UserAdminRegistationForm()
+
+    context = {
+        'title': 'Админ-панель - создание нового пользователя',
+        'form': form,
+    }
+    return render(request, 'admins/admin-users-create.html', context)
 
 def admin_users_update_delete(request):
     return render(request, 'admins/admin-users-update-delete.html')
