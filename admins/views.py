@@ -1,21 +1,25 @@
 from django.shortcuts import render, HttpResponseRedirect
 from django.urls import reverse
+from django.contrib.auth.decorators import user_passes_test
 
 from admins.forms import UserAdminRegistationForm, UserAdminProfileForm
 from users.models import User
 
 
 # Create your views here.
+@user_passes_test(lambda u: u.is_staff)
 def index(request):
     context = {'title': 'Админ-панель'}
     return render(request, 'admins/index.html', context)
 
 
+@user_passes_test(lambda u: u.is_staff)
 def admin_users(request):
     context = {'title': 'Админ-панель - пользователи', 'users': User.objects.all()}
     return render(request, 'admins/admin-users-read.html', context)
 
 
+@user_passes_test(lambda u: u.is_staff)
 def admin_users_create(request):
     if request.method == 'POST':
         form = UserAdminRegistationForm(data=request.POST, files=request.FILES)
@@ -32,6 +36,7 @@ def admin_users_create(request):
     return render(request, 'admins/admin-users-create.html', context)
 
 
+@user_passes_test(lambda u: u.is_staff)
 def admin_users_update(request, pk):
     selected_user = User.objects.get(id=pk)
     if request.method == 'POST':
@@ -49,6 +54,7 @@ def admin_users_update(request, pk):
     return render(request, 'admins/admin-users-update-delete.html', context)
 
 
+@user_passes_test(lambda u: u.is_staff)
 def admin_users_remove(request, pk):
     user = User.objects.get(id=pk)
     user.is_active = False
