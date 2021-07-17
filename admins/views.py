@@ -2,8 +2,9 @@ from django.shortcuts import render, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import user_passes_test
 
-from admins.forms import UserAdminRegistationForm, UserAdminProfileForm
+from admins.forms import UserAdminRegistationForm, UserAdminProfileForm, ProductAdminCreationForm
 from users.models import User
+from products.models import Product
 
 
 # Create your views here.
@@ -60,3 +61,26 @@ def admin_users_remove(request, pk):
     user.is_active = False
     user.save()
     return HttpResponseRedirect(reverse('admins:admin_users'))
+
+
+@user_passes_test(lambda u: u.is_staff)
+def admin_products(request):
+    context = {'title': 'Админ-панель - продукты', 'products': Product.objects.all()}
+    return render(request, 'admins/admin-products-read.html', context)
+
+
+@user_passes_test(lambda u: u.is_staff)
+def admin_product_create(request):
+    if request.method == 'POST':
+        form = ProductAdminCreationForm(data=request.POST, files=request.FILES)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('admins:admin_products'))
+    else:
+        form = ProductAdminCreationForm()
+
+    context = {
+        'title': 'Админ-панель - создание нового продукта',
+        'form': form,
+    }
+    return render(request, 'admins/admin-products-create.html', context)
