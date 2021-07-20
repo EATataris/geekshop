@@ -2,9 +2,9 @@ from django.shortcuts import render, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import user_passes_test
 
-from admins.forms import UserAdminRegistationForm, UserAdminProfileForm, ProductAdminCreationForm
+from admins.forms import UserAdminRegistationForm, UserAdminProfileForm, ProductAdminCreationForm, ProductAdminCategoryForm
 from users.models import User
-from products.models import Product
+from products.models import Product, ProductCategory
 
 
 # Create your views here.
@@ -98,7 +98,7 @@ def admin_products_update(request, pk):
     else:
         form = ProductAdminCreationForm(instance=selected_product)
     context = {
-        'title': 'Админ-панель - редактирование товара',
+        'title': 'Админ-панель - редактирование продукта',
         'form': form,
         'selected_product': selected_product,
     }
@@ -111,3 +111,53 @@ def admin_products_remove(request, pk):
     product = Product.objects.get(id=pk)
     product.delete()
     return HttpResponseRedirect(reverse('admins:admin_products'))
+
+
+@user_passes_test(lambda u: u.is_staff)
+def admin_categories(request):
+    context = {'title': 'Админ-панель - категории', 'categories': ProductCategory.objects.all()}
+    return render(request, 'admins/admin-categories-read.html', context)
+
+
+@user_passes_test(lambda u: u.is_staff)
+def admin_category_create(request):
+    if request.method == 'POST':
+        form = ProductAdminCategoryForm(data=request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('admins:admin_categories'))
+    else:
+        form = ProductAdminCategoryForm()
+
+    context = {
+        'title': 'Админ-панель - создание новой катгерии продуктов',
+        'form': form,
+    }
+    return render(request, 'admins/admins-categories-create.html', context)
+
+
+
+@user_passes_test(lambda u: u.is_staff)
+def admin_categories_update(request, pk):
+    selected_category = ProductCategory.objects.get(id=pk)
+    if request.method == 'POST':
+        form = ProductAdminCategoryForm(instance=selected_category, data=request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('admins:admin_categories'))
+    else:
+        form = ProductAdminCategoryForm(instance=selected_category)
+    context = {
+        'title': 'Админ-панель - редактирование категории продукта',
+        'form': form,
+        'selected_category': selected_category,
+    }
+    return render(request, 'admins/admins-categories-update-delete.html', context)
+
+
+
+@user_passes_test(lambda u: u.is_staff)
+def admin_categories_remove(request, pk):
+    product = ProductCategory.objects.get(id=pk)
+    product.delete()
+    return HttpResponseRedirect(reverse('admins:admin_categories'))

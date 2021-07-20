@@ -3,7 +3,7 @@
 {% block content %}
     <main>
         <div class="container-fluid">
-            <h1 class="mt-4">Редактирование товара | {{ selected_product.name }}</h1>
+            <h1 class="mt-4">Редактирование продукта | {{ selected_product.name }}</h1>
             <div class="card-body">
                 <form action="{% url 'admins:admin_products_update' selected_product.id %}" method="post">
                     {% csrf_token %}
