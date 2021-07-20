@@ -84,3 +84,30 @@ def admin_product_create(request):
         'form': form,
     }
     return render(request, 'admins/admin-products-create.html', context)
+
+
+
+@user_passes_test(lambda u: u.is_staff)
+def admin_products_update(request, pk):
+    selected_product = Product.objects.get(id=pk)
+    if request.method == 'POST':
+        form = ProductAdminCreationForm(instance=selected_product, files=request.FILES, data=request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('admins:admin_products'))
+    else:
+        form = ProductAdminCreationForm(instance=selected_product)
+    context = {
+        'title': 'Админ-панель - редактирование товара',
+        'form': form,
+        'selected_product': selected_product,
+    }
+    return render(request, 'admins/admin-products-update-delete.html', context)
+
+
+
+@user_passes_test(lambda u: u.is_staff)
+def admin_products_remove(request, pk):
+    product = Product.objects.get(id=pk)
+    product.delete()
+    return HttpResponseRedirect(reverse('admins:admin_products'))
