@@ -1,11 +1,12 @@
 from django.shortcuts import render, HttpResponseRedirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import user_passes_test
 
 from admins.forms import UserAdminRegistationForm, UserAdminProfileForm, ProductAdminCreationForm, ProductAdminCategoryForm
 from users.models import User
 from products.models import Product, ProductCategory
-
+from django.views.generic.list import ListView
+from django.views.generic.edit import CreateView
 
 # Create your views here.
 @user_passes_test(lambda u: u.is_staff)
@@ -14,27 +15,17 @@ def index(request):
     return render(request, 'admins/index.html', context)
 
 
-@user_passes_test(lambda u: u.is_staff)
-def admin_users(request):
-    context = {'title': 'Админ-панель - пользователи', 'users': User.objects.all()}
-    return render(request, 'admins/admin-users-read.html', context)
+class UserListView(ListView):
+    model = User
+    template_name = 'admins/admin-users-read.html'
 
 
-@user_passes_test(lambda u: u.is_staff)
-def admin_users_create(request):
-    if request.method == 'POST':
-        form = UserAdminRegistationForm(data=request.POST, files=request.FILES)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('admins:admin_users'))
-    else:
-        form = UserAdminRegistationForm()
+class UserCreateView(CreateView):
+    model = User
+    form_class = UserAdminRegistationForm
+    success_url = reverse_lazy('admins:admin_users')
+    template_name = 'admins/admin-users-create.html'
 
-    context = {
-        'title': 'Админ-панель - создание нового пользователя',
-        'form': form,
-    }
-    return render(request, 'admins/admin-users-create.html', context)
 
 
 @user_passes_test(lambda u: u.is_staff)
@@ -161,3 +152,24 @@ def admin_categories_remove(request, pk):
     product = ProductCategory.objects.get(id=pk)
     product.delete()
     return HttpResponseRedirect(reverse('admins:admin_categories'))
+
+# @user_passes_test(lambda u: u.is_staff)
+# def admin_users(request):
+#     context = {'title': 'Админ-панель - пользователи', 'users': User.objects.all()}
+#     return render(request, 'admins/admin-users-read.html', context)
+
+# @user_passes_test(lambda u: u.is_staff)
+# def admin_users_create(request):
+#     if request.method == 'POST':
+#         form = UserAdminRegistationForm(data=request.POST, files=request.FILES)
+#         if form.is_valid():
+#             form.save()
+#             return HttpResponseRedirect(reverse('admins:admin_users'))
+#     else:
+#         form = UserAdminRegistationForm()
+#
+#     context = {
+#         'title': 'Админ-панель - создание нового пользователя',
+#         'form': form,
+#     }
+#     return render(request, 'admins/admin-users-create.html', context)
