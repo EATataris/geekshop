@@ -18,11 +18,13 @@ def index(request):
     }
     return render(request, 'products/index.html', context)
 
-def products(request):
+def products(request, category_id=None):
     context = {
         'title': 'GeekShop - Каталог',
-        'cur_date': datetime.datetime.now(),
-        'products': Product.objects.all(),
         'categories': ProductCategory.objects.all(),
     }
+    if category_id:
+        context['products'] = Product.objects.filter(category_id=category_id)
+    else:
+        context['products'] = Product.objects.all()
     return render(request, 'products/products.html', context)
