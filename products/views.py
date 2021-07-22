@@ -19,6 +19,7 @@ def index(request):
     }
     return render(request, 'products/index.html', context)
 
+
 def products(request, category_id=None, page=1):
     context = {
         'title': 'GeekShop - Каталог',
