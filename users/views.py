@@ -35,17 +35,12 @@ class UserRegistrationView(CreateView):
         return context
 
 
-
-def logout(request):
-    auth.logout(request)
-    return HttpResponseRedirect(reverse('index'))
-
-
 class UserProfileView(SuccessMessageMixin, UpdateView):
     model = User
     form_class = UserProfileFrom
     template_name = 'users/profile.html'
     success_message = 'Информация успешно обновлена!'
+    error_message = 'Нельзя обновить инфу!'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(object_list=None, **kwargs)
@@ -56,11 +51,18 @@ class UserProfileView(SuccessMessageMixin, UpdateView):
     def get_success_url(self):
         return reverse_lazy('users:profile', kwargs={'pk': self.object.pk})
 
+    def form_invalid(self, form):
+        messages.error(self.request, self.error_message)
+        return super().form_invalid(form)
+
     @method_decorator(login_required())
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
 
+def logout(request):
+    auth.logout(request)
+    return HttpResponseRedirect(reverse('index'))
 
 # @login_required
 # def profile(request):
