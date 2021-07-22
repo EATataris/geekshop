@@ -38,7 +38,7 @@ class ProductAdminCreationForm(forms.ModelForm):
 
 
 
-class ProductAdminCategoryForm(forms.ModelForm):
+class CategoryAdminCreationForm(forms.ModelForm):
     name = forms.CharField(widget=forms.TextInput(attrs={
         'class': 'form-control py-4', 'placeholder': 'Введите название категории'}))
     description = forms.CharField(widget=forms.Textarea(attrs={
