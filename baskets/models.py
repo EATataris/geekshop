@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import Sum, Count
+
 
 from users.models import User
 from products.models import Product
