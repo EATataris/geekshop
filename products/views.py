@@ -1,7 +1,7 @@
 import os
 
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views.generic.list import ListView
 
 from .models import ProductCategory, Product
@@ -26,19 +26,17 @@ class ProductsListView(ListView):
     template_name = 'products/products.html'
     paginate_by = 3
 
+    def get_queryset(self):
+        category_id = self.kwargs.get('category_id', None)
+        if category_id:
+            return self.model.objects.filter(category_id=self.kwargs.get('category_id'))
+        else:
+            return self.model.objects.all()
+
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(object_list=None, **kwargs)
         context['title'] = 'GeekShop - Каталог'
         context['categories'] = ProductCategory.objects.all()
-
-        category_id = self.request.GET.get('category_id')
-        if category_id:
-            products = Product.objects.filter(category_id=category_id)
-        else:
-            products = Product.objects.all()
-
-        paginator = Paginator(products, self.paginate_by)
-        context['products'] = paginator
         return context
 
 
