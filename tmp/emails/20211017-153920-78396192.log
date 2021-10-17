@@ -1,0 +1,14 @@
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: 
+ =?utf-8?b?0J/QvtC00YLQstC10YDQttC00LXQvdC40LUg0YPRh9C10YLQvdC+0Lkg0LfQsNC/?=
+ =?utf-8?b?0LjRgdC4IEppcm5peQ==?=
+From: django@geekshop.local
+To: jirniy@mail.ru
+Date: Sun, 17 Oct 2021 12:39:20 -0000
+Message-ID: <163447436062.9720.15049868697157820684@Tataris-PC>
+
+Для подтверждения учетной записи Jirniy на портале http:/localhost:8000 перейдите по ссылке: 
+http:/localhost:8000/users/verify/jirniy@mail.ru/d47903b12eaf1a14efd5fcfc1ec61eef6e863dad/
+-------------------------------------------------------------------------------
