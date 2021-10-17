@@ -53,11 +53,11 @@ class UserProfileView(SuccessMessageMixin, UpdateView):
     success_message = 'Информация успешно обновлена!'
     error_message = 'Нельзя обновить инфу!'
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(object_list=None, **kwargs)
-        context['title'] = 'GeekShop - Личный кабинет'
-        context['baskets'] = Basket.objects.filter(user=self.request.user)
-        return context
+    # def get_context_data(self, *, object_list=None, **kwargs):
+    #     context = super().get_context_data(object_list=None, **kwargs)
+    #     context['title'] = 'GeekShop - Личный кабинет'
+    #     context['baskets'] = Basket.objects.filter(user=self.request.user)
+    #     return context
 
     def get_success_url(self):
         return reverse_lazy('users:profile', kwargs={'pk': self.object.pk})
