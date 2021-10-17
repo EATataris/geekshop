@@ -159,8 +159,16 @@ LOGIN_REDIRECT_URL = 'index'
 # EMAIL_FILE_PATH = 'tmp/emails/'
 
 #mail изменить путь до файла с настройками
+# DOMAIN_NAME = 'http://localhost:8000'
+# EMAIL_HOST = 'smtp.mail.ru'
+# EMAIL_PORT = 465
+# EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+# EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+# EMAIL_USE_SSL = True
+
+#yandex изменить путь до файла с настройками
 DOMAIN_NAME = 'http://localhost:8000'
-EMAIL_HOST = 'smtp.mail.ru'
+EMAIL_HOST = 'smtp.yandex.com'
 EMAIL_PORT = 465
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
