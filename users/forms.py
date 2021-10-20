@@ -3,7 +3,7 @@ import random
 
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
-from users.models import User
+from users.models import User, UserProfile
 
 
 
@@ -54,7 +54,18 @@ class UserProfileFrom(UserChangeForm):
     image = forms.ImageField(widget=forms.FileInput(attrs={'class': 'custom-file-input'}), required=False)
     username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4', 'readonly': True}))
     email = forms.CharField(widget=forms.EmailInput(attrs={'class': 'form-control py-4', 'readonly': True}))
+    age = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control py-4'}))
 
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'image', 'username', 'email')
+        fields = ('first_name', 'last_name', 'image', 'username', 'email', 'age')
+
+
+class UserProfileEditForm(forms.ModelForm):
+    tagline = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4'}))
+    about = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control py-4'}))
+    gender = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}), choices=UserProfile.GENDER_CHOICES)
+
+    class Meta:
+        model = UserProfile
+        fields = ('tagline', 'about', 'gender',)

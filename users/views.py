@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.core.mail import send_mail
-from django.shortcuts import render, HttpResponseRedirect, redirect
-from users.forms import UserLoginForm, UserRegistrationForm, UserProfileFrom
+from django.shortcuts import render, HttpResponseRedirect, redirect, get_object_or_404
+from users.forms import UserLoginForm, UserRegistrationForm, UserProfileFrom, UserProfileEditForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView
 from django.views.generic import CreateView, UpdateView
@@ -50,17 +50,30 @@ class UserProfileView(SuccessMessageMixin, UpdateView):
     model = User
     form_class = UserProfileFrom
     template_name = 'users/profile.html'
+    # success_url = reverse_lazy('users:profile')
     success_message = 'Информация успешно обновлена!'
     error_message = 'Нельзя обновить инфу!'
 
-    # def get_context_data(self, *, object_list=None, **kwargs):
-    #     context = super().get_context_data(object_list=None, **kwargs)
-    #     context['title'] = 'GeekShop - Личный кабинет'
-    #     context['baskets'] = Basket.objects.filter(user=self.request.user)
-    #     return context
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['profile'] = UserProfileEditForm(instance=self.request.user.userprofile)
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(data=request.POST, files=request.FILES, instance=request.user)
+        form_edit = UserProfileEditForm(data=request.POST,instance=request.user.userprofile)
+        if form.is_valid() and form_edit.is_valid():
+            form.save()
+            return self.form_valid(form)
+        return self.form_valid(form)
+
 
     def get_success_url(self):
         return reverse_lazy('users:profile', kwargs={'pk': self.object.pk})
+
+    def form_valid(self, form):
+        messages.success(self.request, self.success_message)
+        return super().form_valid(form)
 
     def form_invalid(self, form):
         messages.error(self.request, self.error_message)
