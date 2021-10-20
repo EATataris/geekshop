@@ -50,7 +50,6 @@ class UserProfileView(SuccessMessageMixin, UpdateView):
     model = User
     form_class = UserProfileFrom
     template_name = 'users/profile.html'
-    # success_url = reverse_lazy('users:profile')
     success_message = 'Информация успешно обновлена!'
     error_message = 'Нельзя обновить инфу!'
 

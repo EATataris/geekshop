@@ -65,7 +65,8 @@ class UserProfileEditForm(forms.ModelForm):
     tagline = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4'}))
     about = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control py-4'}))
     gender = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}), choices=UserProfile.GENDER_CHOICES)
+    language = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4'}))
 
     class Meta:
         model = UserProfile
-        fields = ('tagline', 'about', 'gender',)
+        fields = ('tagline', 'about', 'gender', 'language')
