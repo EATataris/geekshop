@@ -62,6 +62,7 @@ class UserUpdateView(UpdateView):
         return super().dispatch(request, *args, **kwargs)
 
 
+
 class UserDeleteView(DeleteView):
     model = User
     template_name = 'admins/admin-users-update-delete.html'
