@@ -1,6 +1,10 @@
 {% extends "products/base.html" %}
 {% load static %}
 
+{% block css %}
+    <link href="{% static 'css/profile.css' %}" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
     {% include 'ordersapp/includes/inc_order_summary.html' %}
     <div class="order_form">
