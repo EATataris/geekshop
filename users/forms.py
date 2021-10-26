@@ -62,10 +62,10 @@ class UserProfileFrom(UserChangeForm):
 
 
 class UserProfileEditForm(forms.ModelForm):
-    tagline = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4'}))
-    about = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control py-4'}))
+    tagline = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4'}), required=False)
+    about = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control py-4'}), required=False)
     gender = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}), choices=UserProfile.GENDER_CHOICES)
-    language = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4'}))
+    language = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4'}), required=False)
 
     class Meta:
         model = UserProfile
