@@ -4,7 +4,7 @@ from django.forms import inlineformset_factory
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.dispatch import receiver
-
+from django.http import JsonResponse
 # Create your views here.
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
@@ -12,6 +12,8 @@ from django.views.generic import ListView, CreateView, UpdateView, DetailView, D
 from ordersapp.forms import OrderItemForm
 from ordersapp.models import Order, OrderItem
 from baskets.models import Basket
+from products.models import Product
+
 
 class OrderList(ListView):
     model = Order
@@ -136,3 +138,11 @@ def product_quantity_update_save(sender, instance, **kwargs):
     else:
         instance.product.quantity -= instance.quantity
     instance.product.save()
+
+
+def get_product_price(request, pk):
+    if request.is_ajax():
+        product = Product.objects.get(pk=pk)
+        if product:
+            return JsonResponse({'price': product.price})
+    return  JsonResponse({'price': 0})
