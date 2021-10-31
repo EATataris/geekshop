@@ -1,8 +1,10 @@
 from django.db import transaction
+from django.db.models.signals import pre_delete, pre_save
 from django.forms import inlineformset_factory
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
-
+from django.dispatch import receiver
+from django.http import JsonResponse
 # Create your views here.
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
@@ -10,6 +12,8 @@ from django.views.generic import ListView, CreateView, UpdateView, DetailView, D
 from ordersapp.forms import OrderItemForm
 from ordersapp.models import Order, OrderItem
 from baskets.models import Basket
+from products.models import Product
+
 
 class OrderList(ListView):
     model = Order
@@ -117,3 +121,28 @@ def order_forming_complete(request, pk):
     order.status = Order.SENT_TO_PROCEED
     order.save()
     return HttpResponseRedirect(reverse('orders:list'))
+
+
+@receiver(pre_delete, sender=Basket)
+@receiver(pre_delete, sender=OrderItem)
+def product_quantity_update_delete(sender, instance, **kwargs):
+    instance.product.quantity += instance.quantity
+    instance.product.save()
+
+
+@receiver(pre_save, sender=Basket)
+@receiver(pre_save, sender=OrderItem)
+def product_quantity_update_save(sender, instance, **kwargs):
+    if instance.pk:
+        instance.product.quantity -= instance.quantity - instance.get_item(int(instance.pk))
+    else:
+        instance.product.quantity -= instance.quantity
+    instance.product.save()
+
+
+def get_product_price(request, pk):
+    if request.is_ajax():
+        product = Product.objects.get(pk=pk)
+        if product:
+            return JsonResponse({'price': product.price})
+    return  JsonResponse({'price': 0})
