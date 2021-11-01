@@ -1,7 +1,6 @@
 .idea
 db.sqlite3
 __pycache__/
-media
 .env
 .env_my
 .env_post
