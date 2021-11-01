@@ -6,6 +6,8 @@ from django.http import JsonResponse
 from products.models import Product
 from baskets.models import Basket
 # Create your views here.
+from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView, View
+
 
 @login_required
 def basket_add(request, product_id):

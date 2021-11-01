@@ -89,7 +89,6 @@ class UserProfileView(SuccessMessageMixin, UpdateView):
             return self.form_valid(form)
         return self.form_valid(form)
 
-
     def get_success_url(self):
         return reverse_lazy('users:profile', kwargs={'pk': self.object.pk})
 
