@@ -6,7 +6,6 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, User
 from users.models import User, UserProfile
 
 
-
 class UserLoginForm(AuthenticationForm):
     username = forms.CharField(widget=forms.TextInput(attrs={
         'class': 'form-control py-4', 'placeholder': 'Введите имя пользователя'}))
@@ -16,7 +15,6 @@ class UserLoginForm(AuthenticationForm):
     class Meta:
         model = User
         fields = ('username', 'password')
-
 
 
 class UserRegistrationForm(UserCreationForm):
@@ -48,7 +46,7 @@ class UserRegistrationForm(UserCreationForm):
         return user
 
 
-class UserProfileFrom(UserChangeForm):
+class UserProfileForm(UserChangeForm):
     first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4'}))
     last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4'}))
     image = forms.ImageField(widget=forms.FileInput(attrs={'class': 'custom-file-input'}), required=False)

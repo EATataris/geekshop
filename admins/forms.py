@@ -1,7 +1,7 @@
 from django import forms
 from products.models import Product, ProductCategory
 
-from users.forms import UserRegistrationForm, UserProfileFrom
+from users.forms import UserRegistrationForm, UserProfileForm
 from users.models import User
 
 class UserAdminRegistationForm(UserRegistrationForm):
@@ -13,7 +13,7 @@ class UserAdminRegistationForm(UserRegistrationForm):
 
 
 
-class UserAdminProfileForm(UserProfileFrom):
+class UserAdminProfileForm(UserProfileForm):
     username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4'}))
     email = forms.CharField(widget=forms.EmailInput(attrs={'class': 'form-control py-4'}))
 
