@@ -2,7 +2,10 @@ import os
 
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.shortcuts import render, get_object_or_404
+from django.views.generic import DetailView
 from django.views.generic.list import ListView
+from django.conf import settings
+from django.core.cache import cache
 
 from .models import ProductCategory, Product
 
@@ -21,6 +24,30 @@ def index(request):
     return render(request, 'products/index.html', context)
 
 
+def get_links_category():
+   if settings.LOW_CACHE:
+       key = 'links_category'
+       link_category = cache.get(key)
+       if link_category is None:
+           link_category = ProductCategory.objects.all()
+           cache.set(key, link_category)
+       return link_category
+   else:
+       return ProductCategory.objects.all()
+
+
+def get_product(pk):
+    if settings.LOW_CACHE:
+        key = f'product_{pk}'
+        product = cache.get(key)
+        if product is None:
+            product = get_object_or_404(Product, pk=pk)
+            cache.set(key, product)
+        return product
+    else:
+        return get_object_or_404(Product, pk=pk)
+
+
 class ProductsListView(ListView):
     model = Product
     template_name = 'products/products.html'
@@ -36,6 +63,24 @@ class ProductsListView(ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(object_list=None, **kwargs)
         context['title'] = 'GeekShop - Каталог'
+        context['categories'] = get_links_category()
+        return context
+
+
+class ProductDetail(DetailView):
+    """
+    Контроллер вывода информации о продукте
+    """
+    model = Product
+    template_name = 'products/product_detail.html'
+    context_object_name = 'product'
+
+
+    def get_context_data(self, category_id=None, *args, **kwargs):
+        """Добавляем список категорий для вывода сайдбара с категориями на странице каталога"""
+        context = super().get_context_data()
+
+        context['product'] = get_product(self.kwargs.get('pk'))
         context['categories'] = ProductCategory.objects.all()
         return context
 
