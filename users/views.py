@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.core.mail import send_mail
 from django.shortcuts import render, HttpResponseRedirect, redirect, get_object_or_404
-from users.forms import UserLoginForm, UserRegistrationForm, UserProfileFrom, UserProfileEditForm
+from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm, UserProfileEditForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView
 from django.views.generic import CreateView, UpdateView
@@ -71,7 +71,7 @@ class UserRegistrationView(CreateView):
 
 class UserProfileView(SuccessMessageMixin, UpdateView):
     model = User
-    form_class = UserProfileFrom
+    form_class = UserProfileForm
     template_name = 'users/profile.html'
     success_message = 'Информация успешно обновлена!'
     error_message = 'Нельзя обновить инфу!'

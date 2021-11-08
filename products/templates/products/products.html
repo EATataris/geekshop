@@ -67,6 +67,7 @@
                                     </h4>
                                     <h5>{{ item.price | floatformat:2 }} руб.</h5>
                                     <p class="card-text">{{ item.description }}</p>
+                                    <p class="card-text">{{ item.category.name }}</p>
                                 </div>
                                 <div class="card-footer text-center">
                                     <a href="{% url 'baskets:basket_add' item.id %}" class="btn btn-outline-success">Отправить в корзину</a>
