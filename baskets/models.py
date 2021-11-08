@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.utils.functional import cached_property
 
 from users.models import User
 from products.models import Product
@@ -16,7 +16,7 @@ from products.models import Product
 
 
 class Basket(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='basket')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=0)
     created_timestamp = models.DateTimeField(auto_now_add=True)
@@ -28,13 +28,20 @@ class Basket(models.Model):
     def sum(self):
         return self.quantity * self.product.price
 
+    @cached_property
+    def get_items_cached(self):
+        return self.user.basket.select_related()
+
     def total_sum(self):
-        baskets = Basket.objects.filter(user=self.user)
+        #baskets = Basket.objects.filter(user=self.user)
+        baskets = self.get_items_cached
         return  sum(basket.sum() for basket in baskets)
 
     def total_quantity(self):
-        baskets = Basket.objects.filter(user=self.user)
+        #baskets = Basket.objects.filter(user=self.user)
+        baskets = self.get_items_cached
         return sum(basket.quantity for basket in baskets)
+
 
     # def delete(self, using=None, keep_parents=False):
     #     self.product.quantity += self.quantity
