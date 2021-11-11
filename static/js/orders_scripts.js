@@ -74,10 +74,10 @@ window.addEventListener("load", () => {
                             quantity_arr[orderitem_num] = 0;
                         }
 
-                        // let price_html2 = '<input readonly class="form-control" name="orderitems-' + orderitem_num + '-price" value="' + data.price.toString().replace('.', ',') + ' руб">';
-                        let price_html = '<input readonly class="form-control" name="orderitems-' + orderitem_num + '-price" value="' + data.price + '">';
+                        let price_html2 = '<input readonly class="form-control" name="orderitems-' + orderitem_num + '-price" value="' + data.price.toString().replace('.', ',') + ' руб">';
+                        // let price_html = '<input readonly class="form-control" name="orderitems-' + orderitem_num + '-price" value="' + data.price + '">';
                         let current_tr = $('.order_form table').find('tr:eq(' + (orderitem_num + 1) + ')');
-                        current_tr.find('td:eq(2)').html((price_html))
+                        current_tr.find('td:eq(2)').html((price_html2))
                     }
                 }
             })
