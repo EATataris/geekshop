@@ -13,7 +13,7 @@ window.addEventListener("load", () => {
 
     for (i = 0; i < total_forms; i++) {
         _quantity = parseInt($('input[name="orderitems-' + i + '-quantity"]').val());
-        _price = parseInt($('input[name="orderitems-' + i + '-price"]').val().replace(',', '.'));
+        _price = parseInt($('input[name="orderitems-' + i + '-price"]').text().replace(',', '.'));
 
         quantity_arr[i] = _quantity;
         if (_price) {
