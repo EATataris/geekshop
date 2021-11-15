@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.core.mail import send_mail
+from django.db import transaction
 from django.shortcuts import render, HttpResponseRedirect, redirect, get_object_or_404
 from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm, UserProfileEditForm
 from django.contrib.auth.decorators import login_required
@@ -81,9 +82,10 @@ class UserProfileView(SuccessMessageMixin, UpdateView):
         context['profile'] = UserProfileEditForm(instance=self.request.user.userprofile)
         return context
 
+    @transaction.atomic
     def post(self, request, *args, **kwargs):
         form = self.form_class(data=request.POST, files=request.FILES, instance=request.user)
-        form_edit = UserProfileEditForm(data=request.POST,instance=request.user.userprofile)
+        form_edit = UserProfileEditForm(request.POST,instance=request.user.userprofile)
         if form.is_valid() and form_edit.is_valid():
             form.save()
             return self.form_valid(form)

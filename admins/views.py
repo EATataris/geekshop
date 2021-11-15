@@ -1,9 +1,14 @@
+from django.db.models import F
 from django.shortcuts import render, HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import user_passes_test
 from django.utils.decorators import method_decorator
+# from django.dispatch import receiver
+# from django.db.models.signals import pre_save
+from django.db import connection
 
-from admins.forms import UserAdminRegistationForm, UserAdminProfileForm, ProductAdminCreationForm, CategoryAdminCreationForm
+
+from admins.forms import UserAdminRegistrationForm, UserAdminProfileForm, ProductAdminCreationForm, CategoryAdminCreationForm
 from users.models import User
 from products.models import Product, ProductCategory
 from django.views.generic.list import ListView
@@ -14,6 +19,23 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 def index(request):
     context = {'title': 'Админ-панель'}
     return render(request, 'admins/index.html', context)
+
+
+def db_profile_by_type(prefix, type, queries):
+   update_queries = list(filter(lambda x: type in x['sql'], queries))
+   print(f'db_profile {type} for {prefix}:')
+   [print(query['sql']) for query in update_queries]
+
+
+# @receiver(pre_save, sender=ProductCategory)
+# def product_is_active_update_productcategory_save(sender, instance, **kwargs):
+#    if instance.pk:
+#        if instance.is_active:
+#            instance.product_set.update(is_active=True)
+#        else:
+#            instance.product_set.update(is_active=False)
+#
+#        db_profile_by_type(sender, 'UPDATE', connection.queries)
 
 
 class UserListView(ListView):
@@ -32,7 +54,7 @@ class UserListView(ListView):
 
 class UserCreateView(CreateView):
     model = User
-    form_class = UserAdminRegistationForm
+    form_class = UserAdminRegistrationForm
     template_name = 'admins/admin-users-create.html'
     success_url = reverse_lazy('admins:admin_users')
 
@@ -60,7 +82,6 @@ class UserUpdateView(UpdateView):
     @method_decorator(user_passes_test(lambda u: u.is_staff))
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
-
 
 
 class UserDeleteView(DeleteView):
@@ -171,6 +192,15 @@ class CategoriesUpdateView(UpdateView):
     template_name = 'admins/admins-categories-update-delete.html'
     success_url = reverse_lazy('admins:admin_categories')
 
+    def form_valid(self, form):
+        if 'discount' in form.cleaned_data:
+            discount = form.cleaned_data['discount']
+            if discount:
+                print(f'применяется скидка для {discount}% к товарам категории {self.object.name}')
+                self.object.product_set.update(price=F('price') * (1 - discount / 100))
+                db_profile_by_type(self.__class__, 'UPDATE', connection.queries)
+        return HttpResponseRedirect(self.get_success_url())
+
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(object_list=None, **kwargs)
         context['title'] = 'Админ-панель - редактирование категории продуктов'
@@ -185,6 +215,12 @@ class CategoriesDeleteView(DeleteView):
     model = ProductCategory
     template_name = 'admins/admins-categories-update-delete.html'
     success_url = reverse_lazy('admins:admin_categories')
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.product_set.update(is_active=False)
+        self.object.is_active = False
+        self.object.save()
 
     @method_decorator(user_passes_test(lambda u: u.is_staff))
     def dispatch(self, request, *args, **kwargs):
